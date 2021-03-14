@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEBUG
-
 #define MALLOC(p, s) \
 if (!((p) = malloc(s))) {\
 fprintf(stderr, "Insufficient memory");\
