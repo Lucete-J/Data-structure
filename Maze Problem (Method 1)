@@ -1,0 +1,119 @@
+#include <stdio.h>
+
+#define TRUE 1
+#define FALSE 0
+#define MAX_STACK_SIZE 128
+#define MAX_ROW 7
+#define MAX_COL 7
+
+typedef struct {
+    int row;
+    int col;
+    int dir;
+} element;
+element stack[MAX_STACK_SIZE];
+int top = -1;
+
+typedef struct {
+    int vert;
+    int horiz;
+} offsets;
+offsets direct[8] = {
+    {-1, 0}, {-1, 1}, {0, 1}, {1, 1},
+    {1, 0}, {1, -1}, {0, -1}, {-1, -1}
+};
+
+int mark[MAX_ROW + 2][MAX_COL + 2];
+int maze[MAX_ROW + 2][MAX_COL + 2] = {
+    {1,1,1,1,1,1,1,1,1},
+    {1,0,1,1,0,1,1,1,1},
+    {1,0,1,1,0,1,1,1,1},
+    {1,0,1,1,0,1,1,1,1},
+    {1,1,0,0,0,1,1,1,1},
+    {1,1,1,1,0,0,1,1,1},
+    {1,1,1,1,1,0,1,1,1},
+    {1,0,0,0,0,0,0,0,1},
+    {1,1,1,1,1,1,1,1,1}
+    };
+
+
+void push(element item);
+element pop();
+void path(void);
+
+int main(void)
+{
+    int i, j;
+
+    for (i = 0 ; i < MAX_ROW + 2 ; i ++) {
+        for (j = 0 ; j < MAX_COL + 2 ; j ++) {
+            printf("%2d", maze[i][j]);
+            mark[i][j] = maze[i][j];
+        }
+        printf("\n");
+    }
+
+    path();
+
+    return 0;
+}
+
+void push(element item)
+{
+    if (top >= MAX_STACK_SIZE) printf("Stack is full.\n");
+    stack[++ top] = item;
+}
+
+element pop()
+{
+    if (top == -1) printf("Stack is empty.\n");
+    return stack[top --];
+}
+
+void path(void)
+{
+    int i, row, col, startRow, startCol, exitRow, exitCol, found = FALSE;
+    element currentPos = {1, 1};
+
+    exitRow = MAX_ROW;  
+    exitCol = MAX_COL;
+
+    
+    push(currentPos);
+
+    startRow = 1;
+    startCol = 1;
+
+    while (top > -1 && found != TRUE) {
+        if (top != 0) {
+            currentPos = pop();
+        } else {
+            currentPos.row = startRow;
+            currentPos.col = startCol;
+        }
+        row = currentPos.row;
+        col = currentPos.col;
+        i = 0;
+        while (i < 8 && found != TRUE) {
+            if (mark[row + direct[i].vert][col + direct[i].horiz] == 0) {
+                row = row + direct[i].vert;
+                col = col + direct[i].horiz;
+                mark[currentPos.row][currentPos.col] = 1;
+                currentPos.row = row;
+                currentPos.col = col;
+                push(currentPos);
+                i = 0;
+            } else if (currentPos.row == exitRow && currentPos.col == exitCol) {
+                found = TRUE;
+            } else {
+                i += 1;
+            }
+        }
+    }
+    if (found) {
+        printf("The path. \n");
+        printf(" row  col \n");
+        for (i = 0 ; i <= top ; i ++)
+            printf("<%2d, %2d>\n", stack[i].row, stack[i].col);
+    } else printf("The maze does not have a path. \n");
+}
