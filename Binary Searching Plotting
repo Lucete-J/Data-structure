@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <time.h>
+
+#define MAX_SIZE 100001
+
+int binarysearch(int from, int to, int * ary, int n);
+
+
+int main(void)
+{
+    int i, n = 0;
+    int step = 100;
+    int ary[MAX_SIZE];
+    clock_t start;
+    double duration;
+    FILE * fp = fopen("binsearch.csv", "w");
+
+    for (i = 0 ; i < MAX_SIZE ; i ++)
+        ary[i] = MAX_SIZE - i;
+    fprintf(fp, "%s,%s\n", "n", "time");
+
+    printf("    n         time\n");
+    for (n = 100 ; n < MAX_SIZE ; n += step) {
+
+        start = clock();                    // Start time
+        
+        binarysearch(0, n, ary, -1);
+        duration = ((double) (clock() - start)) / CLOCKS_PER_SEC;
+
+        fprintf(fp, "%d,%f\n", n, duration);
+        printf("%d     %f\n", n, duration);
+        if (n == 1000) step = 1000;
+        if (n == 10000) step = 10000;
+    }
+    fclose(fp);
+}
+
+int binarysearch(int from, int to, int * ary, int n)
+{
+    int mid = (from + to) / 2;
+
+    if (from > to) return -1;
+
+    if (ary[mid] < n)
+        return binarysearch(from, mid - 1, ary, n);
+    else if (ary[mid] == n)
+        return mid;
+    else 
+        return binarysearch(mid + 1, to, ary, n);
+
+}
