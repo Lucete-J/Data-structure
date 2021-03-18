@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <time.h>
+
+#define MAX_SIZE 100001
+
+int lsearch(int ary[], int size, int value);
+
+int main(void)
+{
+    int i, n;
+    int step = 100;
+    int ary[MAX_SIZE];
+    clock_t start;
+    double duration;
+
+    FILE * fp = fopen("linsearch.csv", "w");
+
+    for (i = 0 ; i < MAX_SIZE ; i ++)
+            ary[i] = MAX_SIZE - i;
+
+    // meta
+    fprintf(fp, "%s,%s\n", "n", "time");
+    printf("    n         time\n");
+
+    // loop 
+    for (n = 100 ; n < MAX_SIZE ; n += step) {
+
+        start = clock();                    // Start time
+        lsearch(ary, n, -1);
+        duration = ((double) (clock() - start)) / CLOCKS_PER_SEC;
+
+        fprintf(fp, "%d,%f\n", n, duration);
+        printf("%d     %f\n", n, duration);
+
+        if (n == 1000) step = 1000;
+        if (n == 10000) step = 10000;
+    }
+    fclose(fp);
+
+}
+
+int lsearch(int ary[], int size, int value)
+{
+    int i;
+
+    for (i = 0 ; i < size ; i ++) {
+        if (ary[i] == value) return i; 
+    } 
+    return -1;
+}
