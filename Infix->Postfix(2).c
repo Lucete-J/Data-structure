@@ -10,29 +10,9 @@ static int isp[] = {0, 19, 12, 12, 13, 13, 0};
 // In coming precedence
 static int icp[] = {20, 19, 12, 12, 13, 13, 0};
 
-void postfix();
-precedence getToken(char *token, int *n);
-char precedence2char(precedence item);
-
-// Stack Operation
-void push(precedence item);
-precedence pop();
-void printStack();
-
 char expr[MAX_BUF_SIZE];
 precedence stack[MAX_BUF_SIZE];
 int top = -1;
-
-// main function
-int main(void)
-{
-    // Enter the formula 
-    scanf("%s", expr);
-    postfix();
-
-    // if main function execution clear return 0
-    return 0;
-}
 
 // Infix formula -> Postfix formula
 void postfix()
@@ -107,4 +87,15 @@ char precedence2char(precedence item)
         case divide: return '/';
     }
     return '\0';
+}
+
+// main function
+int main(void)
+{
+    // Enter the formula 
+    scanf("%s", expr);
+    postfix();
+
+    // if main function execution clear return 0
+    return 0;
 }
