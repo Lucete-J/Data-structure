@@ -14,37 +14,6 @@ char expr[MAX_BUF_SIZE];
 precedence stack[MAX_BUF_SIZE];
 int top = -1;
 
-// Infix formula -> Postfix formula
-void postfix()
-{
-    precedence cur;
-    char token;
-    int n = 0;
-
-    // Push end of string (스택의 맨 밑에 eos을 넣어서 pop()함수의 제한을 검)
-    push(eos);
-    // If cur is not eos, execute while loop
-    while ((cur = getToken(&token, &n)) != eos) {
-        // If cur is operand(A, B ...) printout
-        if (cur == operand) printf("%c", token);
-        else if (cur == rparen) {               // if cur is right paren(')'), execute pop function
-            while (stack[top] != lparen) 
-                printf("%c", precedence2char(pop()));
-            pop();  
-        }
-        else {                                  // if cur is operator (+, /, +, -), printout
-            while (isp[stack[top]] >= icp[cur]) 
-                printf("%c", precedence2char(pop()));
-            push(cur);
-        }
-    }
-    // Pop what's left on the stack
-    while ((cur = pop()) != eos)
-        printf("%c", precedence2char(cur));
-    // Initialize the stack
-    top = -1;
-}
-
 // Get token and return precedence
 precedence getToken(char *token, int *n)
 {
@@ -87,6 +56,37 @@ char precedence2char(precedence item)
         case divide: return '/';
     }
     return '\0';
+}
+
+// Infix formula -> Postfix formula
+void postfix()
+{
+    precedence cur;
+    char token;
+    int n = 0;
+
+    // Push end of string (스택의 맨 밑에 eos을 넣어서 pop()함수의 제한을 검)
+    push(eos);
+    // If cur is not eos, execute while loop
+    while ((cur = getToken(&token, &n)) != eos) {
+        // If cur is operand(A, B ...) printout
+        if (cur == operand) printf("%c", token);
+        else if (cur == rparen) {               // if cur is right paren(')'), execute pop function
+            while (stack[top] != lparen) 
+                printf("%c", precedence2char(pop()));
+            pop();  
+        }
+        else {                                  // if cur is operator (+, /, +, -), printout
+            while (isp[stack[top]] >= icp[cur]) 
+                printf("%c", precedence2char(pop()));
+            push(cur);
+        }
+    }
+    // Pop what's left on the stack
+    while ((cur = pop()) != eos)
+        printf("%c", precedence2char(cur));
+    // Initialize the stack
+    top = -1;
 }
 
 // main function
